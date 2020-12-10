@@ -91,7 +91,7 @@ stages:
 
     - job: boost
       timeoutInMinutes: "240"
-      dependsOn: freetype_sp
+      dependsOn: freetype_2
       steps:
       - template: azure-pipelines/build_stage.windows.yml
 
