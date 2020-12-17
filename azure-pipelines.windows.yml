@@ -155,3 +155,10 @@ stages:
       timeoutInMinutes: "1440"
       steps:
       - template: azure-pipelines/build_stage.windows.yml
+
+- stage: snappy
+  jobs:
+    - job: snappy
+      dependsOn: benchmark
+      steps:
+      - template: azure-pipelines/build_stage.windows.yml
