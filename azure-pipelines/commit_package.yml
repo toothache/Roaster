@@ -1,0 +1,47 @@
+parameters:
+  pkgs: []
+
+jobs:
+- ${{ each pkg in parameters.pkgs }}:
+  - job: ${{ replace(pkg, '-', '_') }}
+    steps:
+      - powershell: |
+          . .\win\pkgs\utils\pkg.ps1
+
+          $name = (GetPackageName ${{ pkg }}).ToLower()
+          $version = GetLowerCaseSemanticVersion
+          $prefix = (GetPackagePrefix ${{ pkg }})
+          $description = (GetPackageDescription ${{ pkg }})
+
+          if ($description.Length -gt 256)
+          {
+              # truncate description as universal package has length limit
+              $description = $description.SubString(0, 256)
+          }
+
+          Write-Host "================================================================================"
+          Write-Host "| Package Summary "
+          Write-Host "--------------------------------------------------------------------------------"
+          Write-Host "| Name:         $name"
+          Write-Host "| Version:      $version"
+          Write-Host "| Path:         $prefix"
+          Write-Host "| Description:  $description"
+          Write-Host "================================================================================"
+
+          Write-Host "##vso[task.setvariable variable=PackageName]$name"
+          Write-Host "##vso[task.setvariable variable=PackageVersion]$version"
+          Write-Host "##vso[task.setvariable variable=PublishFolder]$prefix"
+          Write-Host "##vso[task.setvariable variable=PublishDescription]$description"
+        displayName: 'env'
+
+      - task: UniversalPackages@0
+        displayName: 'publish universal package'
+        inputs:
+          command: 'publish'
+          feedsToUsePublish: 'internal'
+          vstsFeedPublish: '$(vstsFeed)'
+          vstsFeedPackagePublish: '$(PackageName)'
+          versionOption: 'custom'
+          versionPublish: '$(PackageVersion)'
+          publishDirectory: '$(PublishFolder)'
+          packagePublishDescription: $(PublishDescription)

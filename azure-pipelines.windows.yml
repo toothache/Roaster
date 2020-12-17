@@ -155,3 +155,30 @@ stages:
       timeoutInMinutes: "1440"
       steps:
       - template: azure-pipelines/build_stage.windows.yml
+
+- stage: publish
+  dependsOn: build
+  jobs:
+    - template: azure-pipelines/commit_package.yml
+      parameters:
+        pkgs:
+          # - benchmark
+          # - c-ares
+          # - eigen
+          # - freetype
+          # - gflags
+          # - glog
+          # - grpc
+          # - harfbuzz
+          # - jsoncpp
+          # TODO: pure binaries, how to handle it?
+          # - mkl
+          # - onnx
+          # - opencv
+          # - openssl
+          - ort
+          # - protobuf
+          # - rocksdb
+          # - snappy
+          # - utf8proc
+          # - zlib
