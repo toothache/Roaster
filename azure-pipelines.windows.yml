@@ -159,6 +159,5 @@ stages:
 - stage: snappy
   jobs:
     - job: snappy
-      dependsOn: benchmark
       steps:
       - template: azure-pipelines/build_stage.windows.yml
