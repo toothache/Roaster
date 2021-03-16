@@ -28,10 +28,17 @@ stages:
       steps:
       - template: azure-pipelines/build_stage.windows.yml
         parameters:
-          stage_name: cuda,cudnn,tensorrt
+          stage_name: cuda,cudnn
+
+    - job: tensorrt
+      dependsOn: gpu
+      steps:
+      - template: azure-pipelines/build_stage.windows.yml
+        parameters:
+          stage_name: tensorrt
 
     - job: mkl
-      dependsOn: gpu
+      dependsOn: tensorrt
       steps:
       - template: azure-pipelines/build_stage.windows.yml
         parameters:
